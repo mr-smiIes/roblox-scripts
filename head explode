@@ -1,0 +1,32 @@
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+for _, player in pairs(Players:GetPlayers()) do
+    local character = player.Character or player.CharacterAdded:Wait()
+    local head = character:FindFirstChild("Head")
+
+    if head and head:IsA("BasePart") then
+        head.Anchored = false
+        head.Size = Vector3.new(1, 1, 1)
+
+        local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local goal = { Size = Vector3.new(10, 10, 10) }
+
+        local tween = TweenService:Create(head, tweenInfo, goal)
+        tween:Play()
+
+        tween.Completed:Connect(function()
+            if head and head.Size == Vector3.new(10, 10, 10) then
+                local explosion = Instance.new("Explosion")
+                explosion.Position = head.Position
+                explosion.BlastRadius = 5
+                explosion.BlastPressure = 500000
+                explosion.Parent = workspace
+
+                head:Destroy()
+            end
+        end)
+    end
+end
+
+-- note: this makes ur head size of and explode happens for all players
